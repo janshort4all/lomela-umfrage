@@ -98,7 +98,7 @@ window.LOMELA_FRAGEN = {
 
       { id: "A40", teil: "Internet, Geld, Entscheidungen", text: "Gibt es WLAN in den Bewohnerzimmern?", typ: "eine",
         optionen: ["Ja, für Bewohner nutzbar und zuverlässig", "Ja, aber unzuverlässig", "Nur für Mitarbeitende", "Nein", "Weiß nicht"] },
-      { id: "A41", teil: "Internet, Geld, Entscheidungen", text: "Wer entscheidet bei kleineren Anschaffungen bis etwa 200 € für Betreuung oder Freizeit?", typ: "eine",
+      { id: "A41", teil: "Internet, Geld, Entscheidungen", text: "Wenn Ihr Haus selbst etwas für Betreuung oder Freizeit kauft, zum Beispiel für den Gemeinschaftsraum: Wer entscheidet bei Beträgen bis etwa 200 €?", typ: "eine",
         optionen: ["Betreuungskräfte oder Sozialer Dienst selbst", "Wohnbereichs- oder Pflegedienstleitung", "Einrichtungsleitung", "Träger oder Verwaltung", "Förderverein", "Weiß nicht"] },
       { id: "A42", teil: "Internet, Geld, Entscheidungen", text: "Woher kommt das Geld dafür meistens?", typ: "mehrere",
         exklusiv: ["Weiß nicht"],
