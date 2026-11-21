@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#EEE5D8">
+<title>Auswertung – Lomela</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="auswertung">
+<header class="kopf kopf-breit">
+  <a class="marke-link" href="index.html"><img src="assets/logo.svg" alt="Lomela, zur Startseite" width="897" height="278"></a>
+</header>
+<main class="blatt breit" id="inhalt">
+  <div id="anmeldung" hidden>
+    <h1 class="titel">Auswertung</h1>
+    <p>Diese Seite ist nur für das Lomela-Team. Bitte geben Sie den Auswertungsschlüssel ein.</p>
+    <form id="anmelde-form" class="anmelde-form">
+      <label for="schluessel">Auswertungsschlüssel</label>
+      <input type="password" id="schluessel" autocomplete="off" spellcheck="false">
+      <button type="submit" class="knopf knopf-haupt">Auswertung öffnen</button>
+    </form>
+    <p class="meldung" id="anmelde-meldung" role="alert" hidden></p>
+  </div>
+  <div id="ergebnis" hidden></div>
+</main>
+<footer class="fuss">
+  <a href="impressum.html">Impressum</a>
+  <a href="datenschutz.html">Datenschutz</a>
+</footer>
+<script src="assets/config.js"></script>
+<script src="assets/fragen.js"></script>
+<script src="assets/auswertung.js"></script>
+</body>
+</html>
