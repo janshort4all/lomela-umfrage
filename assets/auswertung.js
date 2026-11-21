@@ -137,20 +137,166 @@
     );
     ergebnis.appendChild(links);
 
-    var reiter = el("div", { class: "reiter", role: "tablist", "aria-label": "Fragebogen" });
-    ["A", "B"].forEach(function (k) {
-      var n = k === "A" ? anzahlA : anzahlB;
-      var aktiv = zustand.reiter === k;
+    var reiter = el("div", { class: "reiter", role: "tablist", "aria-label": "Ansicht" });
+    [
+      { k: "A", text: "Pflege und Betreuung (" + anzahlA + ")" },
+      { k: "B", text: "Ältere Menschen (" + anzahlB + ")" },
+      { k: "einzeln", text: "Einzelne Antworten" }
+    ].forEach(function (r) {
+      var aktiv = zustand.reiter === r.k;
       reiter.appendChild(el("button", {
         type: "button", role: "tab", "aria-selected": aktiv ? "true" : "false",
         class: aktiv ? "aktiv" : null,
-        text: (k === "A" ? "Pflege und Betreuung" : "Ältere Menschen") + " (" + n + ")",
-        onclick: function () { zustand.reiter = k; zeichne(); }
+        text: r.text,
+        onclick: function () { zustand.reiter = r.k; zustand.meldung = null; zeichne(); }
       }));
     });
     ergebnis.appendChild(reiter);
 
-    zeichneFragebogen(zustand.reiter);
+    if (zustand.reiter === "einzeln") zeichneEinzelne();
+    else zeichneFragebogen(zustand.reiter);
+  }
+
+  /* ---------- Einzelne Antworten ansehen und löschen ---------- */
+
+  function antwortText(f, z) {
+    var a = z.antworten[f.id];
+    if (a === undefined || a === null || a === "") return null;
+    var text = Array.isArray(a) ? a.join(", ") : String(a);
+    var sonst = z.antworten[f.id + "_sonstiges"];
+    if (sonst) text += " (Sonstiges: " + sonst + ")";
+    return text;
+  }
+
+  function zeichneEinzelne() {
+    zustand.auswahl = zustand.auswahl || {};
+    var bereich = el("section", { class: "einzelne", role: "tabpanel" });
+    var zeilen = zustand.zeilen.slice().reverse();
+
+    // Auswahl auf vorhandene Antworten begrenzen
+    var vorhanden = {};
+    zeilen.forEach(function (z) { vorhanden[z.id] = true; });
+    Object.keys(zustand.auswahl).forEach(function (id) { if (!vorhanden[id]) delete zustand.auswahl[id]; });
+
+    bereich.appendChild(el("p", { text: "Hier steht jede Antwort einzeln, die neueste zuerst. Testantworten wählen Sie aus und löschen sie. Gelöschte Antworten lassen sich nicht wiederherstellen." }));
+
+    if (zustand.meldung) bereich.appendChild(el("p", { class: "erfolg", role: "status", text: zustand.meldung }));
+
+    if (!zeilen.length) {
+      bereich.appendChild(el("p", { class: "leer", text: "Es gibt keine Antworten." }));
+      ergebnis.appendChild(bereich);
+      return;
+    }
+
+    var anzahlGewaehlt = function () { return Object.keys(zustand.auswahl).length; };
+    var loeschKnopf = el("button", { type: "button", class: "knopf knopf-loeschen" });
+    var bestaetigung = el("div", { class: "bestaetigung", hidden: true });
+    var alleBox = el("input", { type: "checkbox", id: "alle-waehlen" });
+
+    function aktualisiere() {
+      var n = anzahlGewaehlt();
+      loeschKnopf.textContent = n ? "Ausgewählte löschen (" + n + ")" : "Ausgewählte löschen";
+      loeschKnopf.disabled = n === 0;
+      alleBox.checked = n === zeilen.length;
+      alleBox.indeterminate = n > 0 && n < zeilen.length;
+      if (!n) bestaetigung.hidden = true;
+    }
+
+    alleBox.addEventListener("change", function () {
+      zustand.auswahl = {};
+      if (alleBox.checked) zeilen.forEach(function (z) { zustand.auswahl[z.id] = true; });
+      liste.querySelectorAll("input[type=checkbox]").forEach(function (cb) { cb.checked = alleBox.checked; });
+      aktualisiere();
+    });
+
+    loeschKnopf.addEventListener("click", function () {
+      var n = anzahlGewaehlt();
+      bestaetigung.innerHTML = "";
+      var ja = el("button", { type: "button", class: "knopf knopf-loeschen", text: "Ja, endgültig löschen" });
+      var nein = el("button", { type: "button", class: "knopf knopf-leise", text: "Abbrechen", onclick: function () { bestaetigung.hidden = true; loeschKnopf.focus(); } });
+      var fehler = el("p", { class: "meldung", role: "alert", hidden: true });
+      ja.addEventListener("click", function () {
+        ja.disabled = true;
+        ja.textContent = "Wird gelöscht …";
+        loesche(Object.keys(zustand.auswahl)).then(function (geloescht) {
+          zustand.auswahl = {};
+          zustand.meldung = geloescht === 1 ? "1 Antwort gelöscht." : geloescht + " Antworten gelöscht.";
+          return lade(zustand.schluessel);
+        }).catch(function () {
+          ja.disabled = false;
+          ja.textContent = "Ja, endgültig löschen";
+          fehler.textContent = "Das Löschen hat nicht geklappt. Bitte prüfen Sie die Internetverbindung und versuchen Sie es noch einmal.";
+          fehler.hidden = false;
+        });
+      });
+      bestaetigung.appendChild(el("p", null, el("strong", { text: (n === 1 ? "1 Antwort" : n + " Antworten") + " endgültig löschen?" })));
+      bestaetigung.appendChild(el("div", { class: "bestaetigung-knoepfe" }, ja, nein));
+      bestaetigung.appendChild(fehler);
+      bestaetigung.hidden = false;
+      nein.focus();
+    });
+
+    bereich.appendChild(el("div", { class: "werkzeugleiste" },
+      el("label", { "for": "alle-waehlen", class: "alle" }, alleBox, " Alle auswählen"),
+      loeschKnopf
+    ));
+    bereich.appendChild(bestaetigung);
+
+    var liste = el("ul", { class: "antwort-liste" });
+    zeilen.forEach(function (z) {
+      var fb = DATEN[z.fragebogen];
+      var cb = el("input", { type: "checkbox", id: "w-" + z.id });
+      cb.checked = !!zustand.auswahl[z.id];
+      cb.addEventListener("change", function () {
+        if (cb.checked) zustand.auswahl[z.id] = true;
+        else delete zustand.auswahl[z.id];
+        aktualisiere();
+      });
+
+      var kurz = [];
+      fb.fragen.slice(0, 4).forEach(function (f) {
+        var t = antwortText(f, z);
+        if (t && f.typ !== "text") kurz.push(t);
+      });
+      var beantwortet = fb.fragen.filter(function (f) { return antwortText(f, z); }).length;
+
+      var details = el("details", null, el("summary", { text: "Alle Antworten ansehen" }));
+      var dl = el("dl", { class: "antwort-details" });
+      fb.fragen.forEach(function (f) {
+        var t = antwortText(f, z);
+        if (!t) return;
+        dl.appendChild(el("dt", null, el("span", { class: "frage-id", text: f.id }), " " + f.text));
+        dl.appendChild(el("dd", { text: t }));
+      });
+      if (!dl.childNodes.length) dl.appendChild(el("dd", { text: "Alle Fragen übersprungen." }));
+      details.appendChild(dl);
+
+      liste.appendChild(el("li", { class: "antwort" },
+        el("label", { "for": "w-" + z.id, class: "antwort-kopf" },
+          cb,
+          el("span", { class: "antwort-titel" },
+            el("strong", { text: fb.kurztitel }),
+            el("span", { text: datum(z.erstellt) + (z.dauer ? ", " + Math.max(1, Math.round(z.dauer / 60)) + " Min." : "") })
+          )
+        ),
+        el("p", { class: "antwort-kurz", text: beantwortet + " Fragen beantwortet" + (kurz.length ? ": " + kurz.join(" / ") : "") }),
+        details
+      ));
+    });
+    bereich.appendChild(liste);
+    ergebnis.appendChild(bereich);
+    aktualisiere();
+  }
+
+  function loesche(ids) {
+    return fetch(CONFIG.supabaseUrl + "/rest/v1/rpc/lomela_loeschen", {
+      method: "POST",
+      headers: { "apikey": CONFIG.supabaseKey, "Content-Type": "application/json" },
+      body: JSON.stringify({ schluessel: zustand.schluessel, antwort_ids: ids })
+    }).then(function (antwort) {
+      if (!antwort.ok) throw new Error("server");
+      return antwort.json();
+    });
   }
 
   function linkZeile(name, url) {

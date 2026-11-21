@@ -503,3 +503,37 @@ main.blatt.breit { max-width: 72rem; }
   .balken { grid-column: 1 / -1; grid-row: 2; }
   .filter .knopf { margin-left: 0; }
 }
+
+/* ---------- Einzelne Antworten ---------- */
+
+.einzelne > p { max-width: 62ch; }
+.erfolg { color: #2F5D2A; background: #E8F1E4; border-radius: 12px; padding: 0.75rem 1rem; font-weight: 700; }
+
+.werkzeugleiste {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;
+  padding: 0.75rem 0; border-bottom: 1px solid var(--eiche-hell); margin-top: 1rem;
+}
+.alle { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 700; cursor: pointer; }
+.einzelne input[type="checkbox"] { width: 1.3rem; height: 1.3rem; accent-color: var(--glut-tief); flex: 0 0 auto; }
+
+.knopf-loeschen { background: var(--fehler); color: #fff; min-height: 2.9rem; padding: 0.5rem 1.25rem; font-size: 1rem; }
+.knopf-loeschen:hover { background: #7E2217; }
+.knopf-loeschen:disabled { background: var(--eiche); color: var(--erde-mild); cursor: not-allowed; }
+
+.bestaetigung { background: #FBEAE6; border-radius: 14px; padding: 1rem 1.25rem; margin: 1rem 0; }
+.bestaetigung p { margin-bottom: 0.75rem; }
+.bestaetigung-knoepfe { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.bestaetigung-knoepfe .knopf { min-height: 2.9rem; padding: 0.5rem 1.25rem; font-size: 1rem; }
+
+.antwort-liste { list-style: none; padding: 0; margin: 0; }
+.antwort { border-bottom: 1px solid var(--eiche-hell); padding: 1rem 0; }
+.antwort-kopf { display: flex; align-items: flex-start; gap: 0.9rem; cursor: pointer; }
+.antwort-titel { display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; align-items: baseline; }
+.antwort-titel span { color: var(--erde-mild); font-size: 0.95rem; }
+.antwort-kurz { margin: 0.35rem 0 0.4rem 2.2rem; color: var(--erde-mild); font-size: 0.95rem; }
+.antwort details { margin-left: 2.2rem; }
+.antwort summary { cursor: pointer; color: var(--glut-tief); font-weight: 700; font-size: 0.95rem; }
+.antwort-details { margin: 0.75rem 0 0; display: grid; gap: 0.2rem; }
+.antwort-details dt { font-weight: 700; font-size: 0.95rem; margin-top: 0.5rem; }
+.antwort-details dd { margin: 0 0 0 3.1rem; }
+.antwort-details .frage-id { display: inline-block; min-width: 2.6rem; }
