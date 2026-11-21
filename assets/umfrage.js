@@ -271,13 +271,13 @@
 
       var abgleichen = function () {
         var auswahl = werte(zustand.antworten[f.id]);
-        var voll = f.max && auswahl.length >= f.max;
+        var voll = !!(f.max && auswahl.length >= f.max);
         eingaben.forEach(function (inp) {
           var an = auswahl.indexOf(inp.value) !== -1;
           inp.checked = an;
           var lab = inp.closest(".option");
           lab.classList.toggle("gewaehlt", an);
-          var gesperrt = voll && !an;
+          var gesperrt = !!(voll && !an);
           inp.disabled = gesperrt;
           lab.classList.toggle("gesperrt", gesperrt);
         });
