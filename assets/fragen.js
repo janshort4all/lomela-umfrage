@@ -15,7 +15,7 @@ window.LOMELA_FRAGEN = {
     gross: false,
     einleitung: [
       "Wir möchten verstehen, wie ältere Menschen in Einrichtungen heute Musik, Radio und Hörbücher hören und wo es dabei im Alltag hakt. Ihre Erfahrung aus der Praxis hilft uns sehr.",
-      "Der Fragebogen dauert etwa 10 Minuten und ist anonym."
+      ""
     ],
     fragen: [
       { id: "A1", teil: "Über Sie und Ihre Einrichtung", text: "Wo arbeiten Sie?", typ: "eine", sonstiges: true,
@@ -122,11 +122,11 @@ window.LOMELA_FRAGEN = {
     seite: "alltag.html",
     titel: "Fragebogen: Musik und Radio in Ihrem Alltag",
     kurztitel: "Ältere Menschen",
-    minuten: 9,
+    minuten: 10,
     gross: true,
     einleitung: [
       "Wir möchten wissen, wie Sie heute Musik, Radio und Hörbücher hören und was dabei gut oder schlecht klappt. Es gibt keine richtigen oder falschen Antworten.",
-      "Der Fragebogen dauert etwa 10 Minuten und ist anonym. Gern darf Ihnen jemand beim Ausfüllen helfen."
+      "Gern darf Ihnen jemand beim Ausfüllen helfen."
     ],
     fragen: [
       { id: "B1", teil: "Zu Ihnen", text: "Wer füllt diesen Fragebogen aus?", typ: "eine",
